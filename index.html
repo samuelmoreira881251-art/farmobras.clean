@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Farmácia</title>
+<link rel="manifest" href="/manifest.json">
+</head>
+<body>
+
+<h1>💊 Loja</h1>
+
+<input id="email" placeholder="Email">
+<input id="senha" type="password" placeholder="Senha">
+<button onclick="login()">Login</button>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Farmácia</title>
+</head>
+<body>
+
+<h1>💊 Farmácia Online</h1>
+
+<h2>Login</h2>
+<input id="email" placeholder="Email">
+<input id="senha" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+
+<h2>Produtos</h2>
+<div id="lista"></div>
+
+<script>
+async function login(){
+  const res = await fetch("/login", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: email.value,
+      senha: senha.value
+    })
+  });
+
+  const data = await res.json();
+
+  if(data.token){
+    alert("Logado!");
+  } else {
+    alert(data.erro);
+  }
+}
+
+async function carregar(){
+  const res = await fetch("/produtos");
+  const produtos = await res.json();
+
+  lista.innerHTML = "";
+
+  produtos.forEach(p=>{
+    lista.innerHTML += `
+      <div>
+        <b>${p.nome}</b> - R$ ${p.preco}
+      </div>
+    `;
+  });
+}
+
+carregar();
+</script>
+
+</body>
+</html>

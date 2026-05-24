@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Admin</title></head>
+<body>
+
+<h1>Admin</h1>
+
+<input id="nome">
+<input id="preco">
+<input id="estoque">
+<button onclick="criar()">Criar</button>
+
+<div id="lista"></div>
+
+<script>
+const token = localStorage.getItem("token");
+
+async function criar(){
+  await fetch("/produto", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization": token
+    },
+    body: JSON.stringify({
+      nome: nome.value,
+      preco: Number(preco.value),
+      estoque: Number(estoque.value)
+    })
+  });
+
+  carregar();
+}
+
+async function deletar(id){
+  await fetch("/produto/"+id, {
+    method:"DELETE",
+    headers:{ "Authorization": token }
+  });
+
+  carregar();
+}
+
+async function carregar(){
+  const res = await fetch("/produtos");
+  const produtos = await res.json();
+
+  lista.innerHTML = "";
+
+  produtos.forEach(p=>{
+    lista.innerHTML += `
+      <div>
+        ${p.nome} - R$ ${p.preco}
+        <button onclick="deletar('${p._id}')">X</button>
+      </div>
+    `;
+  });
+}
+
+carregar();
+</script>
+
+</body>
+</html>

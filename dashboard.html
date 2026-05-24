@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h1>Dashboard</h1>
+<p id="total"></p>
+<canvas id="grafico"></canvas>
+
+<script>
+async function load(){
+  const res = await fetch("/dashboard");
+  const data = await res.json();
+
+  total.innerText = "R$ " + data.totalVendas;
+
+  new Chart(grafico, {
+    type: "doughnut",
+    data: {
+      labels: ["Pago", "Pendente"],
+      datasets: [{
+        data: [data.status.pago, data.status.pendente]
+      }]
+    }
+  });
+}
+
+load();
+</script>
+
+</body>
+</html>
